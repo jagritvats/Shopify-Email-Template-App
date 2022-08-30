@@ -12,8 +12,17 @@ import redirectToAuth from './helpers/redirect-to-auth.js';
 import { AppInstallations } from './app_installations.js';
 
 import 'dotenv/config';
-import { Template } from './schemas/template.js';
+// import { Template } from './schemas/template.js';
 import mongoose from 'mongoose';
+const TemplateSchema = new mongoose.Schema(
+	{
+		name: { type: String },
+
+		data: [{}],
+	},
+	{ strict: false }
+);
+const Template = mongoose.model('Template', TemplateSchema);
 
 mongoose.connect(process.env.MONGO_URI, (err, res) => {
 	if (err) {
