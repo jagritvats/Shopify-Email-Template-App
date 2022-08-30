@@ -7,26 +7,39 @@ import {
 	Stack,
 	Link,
 	Heading,
+	EmptyState,
+	Frame,
+	Spinner,
 } from '@shopify/polaris';
-import { useEffect } from 'react';
+import { useContext, useEffect } from 'react';
 
 import EmailEditor from 'react-email-editor';
+import { useQueryClient } from 'react-query';
 
 import { trophyImage } from '../assets';
 
 export default function HomePage() {
+	const client = useQueryClient();
+	const queryParams = new URLSearchParams(window.location.search);
+	sessionStorage.setItem('params', queryParams);
+	console.log(queryParams.toString());
 	useEffect(() => {
 		// try {
-		//   const data = await queryClient.fetchQuery(queryKey, queryFn)
+		// 	client.fetchQuery();
+		// 	client.fetchQuery(queryKey, queryFn);
 		// } catch (error) {
-		//   console.log(error)
+		// 	console.log(error);
 		// }
+
+		console.log(queryParams);
 	}, []);
 	return (
-		<Page narrowWidth>
+		<Page fullWidth>
 			<Layout>
 				<Layout.Section>
 					<Card sectioned>
+						<EmptyState />
+						{/* <Spinner /> */}
 						<Stack
 							wrap={false}
 							spacing="extraTight"
@@ -38,52 +51,18 @@ export default function HomePage() {
 									<Heading>
 										Nice work on building a Shopify app 🎉
 									</Heading>
-									<p>
-										Your app is ready to explore! It
-										contains everything you need to get
-										started including the{' '}
-										<Link
-											url="https://polaris.shopify.com/"
-											external
-										>
-											Polaris design system
-										</Link>
-										,{' '}
-										<Link
-											url="https://shopify.dev/api/admin-graphql"
-											external
-										>
-											Shopify Admin API
-										</Link>
-										, and{' '}
-										<Link
-											url="https://shopify.dev/apps/tools/app-bridge"
-											external
-										>
-											App Bridge
-										</Link>{' '}
-										UI library and components.
-									</p>
-									<p>
-										Ready to go? Start populating your app
-										with some sample products to view and
-										test in your store.{' '}
-									</p>
-									<p>
-										Learn more about building out your app
-										in{' '}
-										<Link
-											url="https://shopify.dev/apps/getting-started/add-functionality"
-											external
-										>
-											this Shopify tutorial
-										</Link>{' '}
-										📚{' '}
-									</p>
+
 									<p>
 										{' '}
-										<Link to="/template">Here </Link> Or you
-										could just continue here?
+										<Link
+											url={
+												`/template/?` +
+												queryParams.toString()
+											}
+										>
+											Here{' '}
+										</Link>{' '}
+										Or you could just continue here?
 									</p>
 
 									<EmailEditor />

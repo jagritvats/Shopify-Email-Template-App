@@ -1,0 +1,22 @@
+.navbar{
+    background-color: var(--p-background);
+}
+.navbar ul{
+    display: flex;
+
+}
+
+.navbar ul li{
+    list-style: none;
+    padding: 0.2em;
+}
+
+.navbar ul li a{
+    text-decoration: none;
+    padding: 1em;
+    
+}
+
+.navbar ul li a:hover{
+    background-color: var(--p-background-hovered);
+}
