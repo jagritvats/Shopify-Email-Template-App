@@ -8,15 +8,13 @@ import { Shopify, LATEST_API_VERSION } from '@shopify/shopify-api';
 import applyAuthMiddleware from './middleware/auth.js';
 import verifyRequest from './middleware/verify-request.js';
 import { setupGDPRWebHooks } from './gdpr.js';
-import productCreator from './helpers/product-creator.js';
 import redirectToAuth from './helpers/redirect-to-auth.js';
-import { BillingInterval } from './helpers/ensure-billing.js';
 import { AppInstallations } from './app_installations.js';
 
 import mongoose from 'mongoose';
 import 'dotenv/config';
-import { Cat } from './schemas/Cat.js';
 import { Template } from './schemas/Template.js';
+
 mongoose.connect(process.env.MONGO_URI, (err, res) => {
 	if (err) {
 		console.log(err);
@@ -111,44 +109,6 @@ export async function createServer(
 			billing: billingSettings,
 		})
 	);
-	app.get('/api/cat', async (req, res) => {
-		console.log('API Cat');
-		const resp = await Cat.create({ name: 'Test kitty' });
-		res.send(resp);
-	});
-
-	app.get('/api/products/count', async (req, res) => {
-		const session = await Shopify.Utils.loadCurrentSession(
-			req,
-			res,
-			app.get('use-online-tokens')
-		);
-		const { Product } = await import(
-			`@shopify/shopify-api/dist/rest-resources/${Shopify.Context.API_VERSION}/index.js`
-		);
-
-		const countData = await Product.count({ session });
-		res.status(200).send(countData);
-	});
-
-	app.get('/api/products/create', async (req, res) => {
-		const session = await Shopify.Utils.loadCurrentSession(
-			req,
-			res,
-			app.get('use-online-tokens')
-		);
-		let status = 200;
-		let error = null;
-
-		try {
-			await productCreator(session);
-		} catch (e) {
-			console.log(`Failed to process products/create: ${e.message}`);
-			status = 500;
-			error = e.message;
-		}
-		res.status(status).send({ success: status === 200, error });
-	});
 
 	app.get('/api/session', async (req, res) => {
 		const session = await Shopify.Utils.loadCurrentSession(
@@ -193,15 +153,11 @@ export async function createServer(
 
 	// API
 	app.post('/api/template', async (req, res) => {
-		console.log('api');
-		const sid = req.query.shop; // or req.query.shop
-		console.log('Shop ', sid);
-		console.log('body ', req.body);
+		const sid = req.query.shop;
 		if (!req.body || !req.body.template) {
 			res.send('Insufficient Data');
 			return;
 		}
-		console.log('body', req.body);
 		const resp = await Template.create({
 			shop: sid,
 			name: req.body.name,
@@ -211,15 +167,11 @@ export async function createServer(
 	});
 
 	app.patch('/api/template', async (req, res) => {
-		console.log('update api');
-		const sid = req.query.shop; // or req.query.shop
-		console.log('Shop ', sid);
-		console.log('body ', req.body);
+		const sid = req.query.shop;
 		if (!req.body || !req.body.template) {
 			res.send('Insufficient Data');
 			return;
 		}
-		console.log('body', req.body);
 		const resp = await Template.findOneAndUpdate(
 			{ shop: sid, name: req.body.name },
 			{
@@ -231,18 +183,16 @@ export async function createServer(
 		res.send(resp);
 	});
 
+	// get template of that shop having this name
 	app.get('/api/template/:id', async (req, res) => {
-		console.log('api temp id ');
-		const sid = req.query.shop; // or req.query.shop
-		console.log('Shop ', sid);
+		const sid = req.query.shop;
 		const resp = await Template.find({ shop: sid, name: req.params.id });
 		res.send(resp);
 	});
 
+	// delete the template of given id/name
 	app.delete('/api/template/:id', async (req, res) => {
-		console.log('api del');
-		const sid = req.query.shop; // or req.query.shop
-		console.log('Shop ', sid);
+		const sid = req.query.shop;
 		const resp = await Template.findOneAndDelete({
 			shop: sid,
 			name: req.params.id,
@@ -250,19 +200,16 @@ export async function createServer(
 		res.send(resp);
 	});
 
-	// check duplicate
+	// check duplicate (return the template if exists in db)
 	app.post('/api/templates/dup', async (req, res) => {
-		console.log('api');
-		const sid = req.query.shop; // or req.query.shop
-		console.log('Shop ', sid);
+		const sid = req.query.shop;
 		const resp = await Template.find({ shop: sid, name: req.body.name });
 		res.send(resp);
 	});
 
+	// return all templates belonging to that shop
 	app.get('/api/templates', async (req, res) => {
-		console.log('api');
-		const sid = req.query.shop; // or req.query.shop
-		console.log('Shop ', sid);
+		const sid = req.query.shop;
 		const resp = await Template.find({ shop: sid });
 		res.send(resp);
 	});

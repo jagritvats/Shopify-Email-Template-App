@@ -16,7 +16,7 @@ function Templates() {
 		const resp = await axios.get(
 			'/api/templates?' + queryParams.toString()
 		);
-		console.log(resp.data);
+		// console.log(resp.data);
 		setTemplates(resp.data);
 		setLoading(false);
 	}, []); // get all templates for that user from backend(which will qu,ery mongodb)

@@ -11,11 +11,10 @@ import {
 import React, { useCallback, useRef, useState } from 'react';
 
 import EmailEditor from 'react-email-editor';
-import { useQuery } from 'react-query';
-import sample from '../../sample.json';
 import axios from 'axios';
 import SendMailComponent from '../../components/SendMail';
-const Template = (props) => {
+
+const Template = () => {
 	const emailEditorRef = useRef(null);
 	const [name, setName] = useState('');
 	const [html, setHtml] = useState('');
@@ -36,17 +35,17 @@ const Template = (props) => {
 					name: nm,
 				}
 			);
-			console.log(existing);
+			// console.log(existing);
 			if (existing.data.length != 0) {
 				return alert('Duplicate Names not allowed');
 			}
-			console.log('saveDesign', design);
+			// console.log('saveDesign', design);
 			const data = await axios.post(
 				'/api/template?' + queryParams.toString(),
 				{ name: nm, template: design }
 			);
-			console.log('axios data ', data);
-			localStorage.setItem('saved', JSON.stringify(design));
+			// console.log('axios data ', data);
+			// localStorage.setItem('saved', JSON.stringify(design));
 
 			toggleActive();
 		});

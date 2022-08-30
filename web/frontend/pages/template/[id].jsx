@@ -1,27 +1,24 @@
 import {
-	Button,
 	Card,
 	Frame,
 	Heading,
-	Layout,
 	Page,
 	PageActions,
 	Spinner,
 	Stack,
-	TextField,
 	Toast,
 } from '@shopify/polaris';
 import axios from 'axios';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 
 import EmailEditor from 'react-email-editor';
-import { Navigate, useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import SendMailComponent from '../../components/SendMail';
 
 const Template = () => {
 	const queryParams = new URLSearchParams(window.location.search);
 	const params = useParams();
-	const navigate = useNavigate();
+
 	console.log('param id ', params.id);
 	const sample = {};
 	const emailEditorRef = useRef(null);
@@ -43,13 +40,13 @@ const Template = () => {
 
 	const saveDesign = () => {
 		emailEditorRef.current.editor.saveDesign(async (design) => {
-			console.log('saveDesign', design);
+			// console.log('saveDesign', design);
 			setTemplate(design);
 			const data = await axios.patch(
 				'/api/template?' + queryParams.toString(),
 				{ name: params.id, template: design }
 			);
-			console.log('axios data ', data);
+			// console.log('axios data ', data);
 
 			toggleActive();
 		});
@@ -58,9 +55,9 @@ const Template = () => {
 	const exportHtml = () => {
 		emailEditorRef.current.editor.exportHtml((data) => {
 			const { design, html } = data;
-			console.log('exportHtml', html);
+			// console.log('exportHtml', html);
 			setHtml(html);
-			alert('Output HTML has been logged in your developer console.');
+			alert('Output HTML is now present in the textbox below.');
 		});
 	};
 
@@ -69,10 +66,6 @@ const Template = () => {
 			`/api/template/${params.id}?` + queryParams.toString()
 		);
 		toggleActiveDel();
-	};
-
-	const onDesignLoad = (data) => {
-		console.log('onDesignLoad', data);
 	};
 
 	const onLoad = () => {
@@ -112,18 +105,6 @@ const Template = () => {
 				<Stack vertical>
 					<Stack vertical>
 						<Heading> Email Template : {params.id} </Heading>
-
-						{/* <TextField
-						label="Template name"
-						disabled={true}
-						// value=""
-						// onChange={handleChange}
-						// autoComplete="off"
-					/> */}
-						{/* <Stack>
-							<Button onClick={saveDesign}>Save Design</Button>
-							<Button onClick={exportHtml}>Export HTML</Button>
-						</Stack> */}
 					</Stack>
 
 					<Card>
@@ -158,17 +139,6 @@ const Template = () => {
 					]}
 				/>
 			</Page>
-
-			{/* <Card>
-				<textarea
-					name="html"
-					id="html"
-					disabled
-					value={html}
-					rows="20"
-					cols="160"
-				></textarea>
-			</Card> */}
 
 			<SendMailComponent html={html} />
 		</Frame>
