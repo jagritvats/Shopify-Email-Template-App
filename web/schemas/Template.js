@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-const TemplateSchema = mongoose.Schema(
+const TemplateSchema = new mongoose.Schema(
 	{
 		name: { type: String },
 
