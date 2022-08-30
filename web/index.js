@@ -2,7 +2,7 @@
 import { join } from 'path';
 import { readFileSync } from 'fs';
 import express from 'express';
-import cookieParser from 'cookie-parser';
+import cookieParser, { signedCookie } from 'cookie-parser';
 import { Shopify, LATEST_API_VERSION } from '@shopify/shopify-api';
 
 import applyAuthMiddleware from './middleware/auth.js';
@@ -12,6 +12,18 @@ import productCreator from './helpers/product-creator.js';
 import redirectToAuth from './helpers/redirect-to-auth.js';
 import { BillingInterval } from './helpers/ensure-billing.js';
 import { AppInstallations } from './app_installations.js';
+
+import mongoose from 'mongoose';
+import 'dotenv/config';
+import { Cat } from './schemas/Cat.js';
+import { Template } from './schemas/Template.js';
+mongoose.connect(process.env.MONGO_URI, (err, res) => {
+	if (err) {
+		console.log(err);
+	} else {
+		console.log('Connected to DB');
+	}
+});
 
 const USE_ONLINE_TOKENS = false;
 
@@ -99,6 +111,11 @@ export async function createServer(
 			billing: billingSettings,
 		})
 	);
+	app.get('/api/cat', async (req, res) => {
+		console.log('API Cat');
+		const resp = await Cat.create({ name: 'Test kitty' });
+		res.send(resp);
+	});
 
 	app.get('/api/products/count', async (req, res) => {
 		const session = await Shopify.Utils.loadCurrentSession(
@@ -173,6 +190,82 @@ export async function createServer(
 		app.use(compression());
 		app.use(serveStatic(PROD_INDEX_PATH, { index: false }));
 	}
+
+	// API
+	app.post('/api/template', async (req, res) => {
+		console.log('api');
+		const sid = req.query.shop; // or req.query.shop
+		console.log('Shop ', sid);
+		console.log('body ', req.body);
+		if (!req.body || !req.body.template) {
+			res.send('Insufficient Data');
+			return;
+		}
+		console.log('body', req.body);
+		const resp = await Template.create({
+			shop: sid,
+			name: req.body.name,
+			template: req.body.template,
+		});
+		res.send(resp);
+	});
+
+	app.patch('/api/template', async (req, res) => {
+		console.log('update api');
+		const sid = req.query.shop; // or req.query.shop
+		console.log('Shop ', sid);
+		console.log('body ', req.body);
+		if (!req.body || !req.body.template) {
+			res.send('Insufficient Data');
+			return;
+		}
+		console.log('body', req.body);
+		const resp = await Template.findOneAndUpdate(
+			{ shop: sid, name: req.body.name },
+			{
+				shop: sid,
+				name: req.body.name,
+				template: req.body.template,
+			}
+		);
+		res.send(resp);
+	});
+
+	app.get('/api/template/:id', async (req, res) => {
+		console.log('api temp id ');
+		const sid = req.query.shop; // or req.query.shop
+		console.log('Shop ', sid);
+		const resp = await Template.find({ shop: sid, name: req.params.id });
+		res.send(resp);
+	});
+
+	app.delete('/api/template/:id', async (req, res) => {
+		console.log('api del');
+		const sid = req.query.shop; // or req.query.shop
+		console.log('Shop ', sid);
+		const resp = await Template.findOneAndDelete({
+			shop: sid,
+			name: req.params.id,
+		});
+		res.send(resp);
+	});
+
+	// check duplicate
+	app.post('/api/templates/dup', async (req, res) => {
+		console.log('api');
+		const sid = req.query.shop; // or req.query.shop
+		console.log('Shop ', sid);
+		const resp = await Template.find({ shop: sid, name: req.body.name });
+		res.send(resp);
+	});
+
+	app.get('/api/templates', async (req, res) => {
+		console.log('api');
+		const sid = req.query.shop; // or req.query.shop
+		console.log('Shop ', sid);
+		const resp = await Template.find({ shop: sid });
+		res.send(resp);
+	});
 
 	app.use('/*', async (req, res, next) => {
 		if (typeof req.query.shop !== 'string') {

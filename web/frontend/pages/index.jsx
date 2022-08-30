@@ -18,6 +18,12 @@ import { useQueryClient } from 'react-query';
 
 import { trophyImage } from '../assets';
 
+//
+
+//  EMAIL SENDER (REACT LIBRARY)
+
+//
+
 export default function HomePage() {
 	const client = useQueryClient();
 	const queryParams = new URLSearchParams(window.location.search);
@@ -38,8 +44,6 @@ export default function HomePage() {
 			<Layout>
 				<Layout.Section>
 					<Card sectioned>
-						<EmptyState />
-						{/* <Spinner /> */}
 						<Stack
 							wrap={false}
 							spacing="extraTight"
@@ -49,7 +53,7 @@ export default function HomePage() {
 							<Stack.Item fill>
 								<TextContainer spacing="loose">
 									<Heading>
-										Nice work on building a Shopify app 🎉
+										Welcome to Email Template Application🎉
 									</Heading>
 
 									<p>
@@ -60,12 +64,27 @@ export default function HomePage() {
 												queryParams.toString()
 											}
 										>
-											Here{' '}
+											Create New Templates{' '}
 										</Link>{' '}
-										Or you could just continue here?
 									</p>
 
-									<EmailEditor />
+									<p>or</p>
+
+									<p>
+										{' '}
+										<Link
+											url={
+												`/templates/?` +
+												queryParams.toString()
+											}
+										>
+											Edit your existing templates{' '}
+										</Link>{' '}
+									</p>
+									<p>-</p>
+									<p>
+										Hope you have fun with this application
+									</p>
 								</TextContainer>
 							</Stack.Item>
 						</Stack>

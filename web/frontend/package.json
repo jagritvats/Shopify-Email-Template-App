@@ -12,11 +12,13 @@
     "node": ">= 12.16"
   },
   "dependencies": {
+    "@emailjs/browser": "^3.6.2",
     "@shopify/app-bridge": "^3.1.0",
     "@shopify/app-bridge-react": "^3.1.0",
     "@shopify/app-bridge-utils": "^3.1.0",
     "@shopify/polaris": "^9.11.0",
     "@vitejs/plugin-react": "1.2.0",
+    "axios": "^0.27.2",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-email-editor": "^1.6.1",
