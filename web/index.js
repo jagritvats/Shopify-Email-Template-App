@@ -11,9 +11,9 @@ import { setupGDPRWebHooks } from './gdpr.js';
 import redirectToAuth from './helpers/redirect-to-auth.js';
 import { AppInstallations } from './app_installations.js';
 
-import mongoose from 'mongoose';
 import 'dotenv/config';
 import { Template } from './schemas/template.js';
+import mongoose from 'mongoose';
 
 mongoose.connect(process.env.MONGO_URI, (err, res) => {
 	if (err) {
