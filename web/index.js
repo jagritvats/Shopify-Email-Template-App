@@ -13,7 +13,7 @@ import { AppInstallations } from './app_installations.js';
 
 import mongoose from 'mongoose';
 import 'dotenv/config';
-import { Template } from './schemas/Template.js';
+import { Template } from './schemas/template.js';
 
 mongoose.connect(process.env.MONGO_URI, (err, res) => {
 	if (err) {
