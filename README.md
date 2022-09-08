@@ -1,4 +1,10 @@
-# Shopify App Template - Node
+# Shopify Email Template Application - Node
+
+![image](https://user-images.githubusercontent.com/69034224/189083048-5cc05f52-b763-44b6-9ded-266910a8dbf0.png)
+![image](https://user-images.githubusercontent.com/69034224/189083132-56fa45db-b1fd-41b4-8b7c-294d40a93518.png)
+![image](https://user-images.githubusercontent.com/69034224/189083178-7b25c7b8-1046-44de-a4f9-abf6100fb2af.png)
+![image](https://user-images.githubusercontent.com/69034224/189083202-8b02641e-b9fe-4bd2-993a-50100079b253.png)
+
 
 This is a template for building a [Shopify app](https://shopify.dev/apps/getting-started) using Node and React. It contains the basics for building a Shopify app.
 
